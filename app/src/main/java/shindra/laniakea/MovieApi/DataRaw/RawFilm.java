@@ -1,10 +1,10 @@
-package shindra.laniakea.MovieApi.RawData;
+package shindra.laniakea.MovieApi.DataRaw;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import shindra.laniakea.MovieApi.UsableData.Film;
+import shindra.laniakea.MovieApi.DataUsable.Film;
 
 /**
  * Created by Guillaume on 30/01/2018.

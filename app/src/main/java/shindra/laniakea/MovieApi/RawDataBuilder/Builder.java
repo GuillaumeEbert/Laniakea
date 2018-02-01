@@ -2,68 +2,54 @@ package shindra.laniakea.MovieApi.RawDataBuilder;
 
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.IntDef;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import shindra.laniakea.MovieApi.IMovieDbRetroFitCall;
-import shindra.laniakea.MovieApi.RetrofitBuilder;
+import shindra.laniakea.MovieApi.Manager.ApiManager;
+import shindra.laniakea.Thread.ThreadToken;
 
 
 /**
  * Created by Guillaume on 30/01/2018.
  */
 
-public abstract class Builder<BuilderResult> implements Runnable {
-    private Handler handler;
-    private int builderType;
+public abstract class Builder extends ThreadToken {
+
     private IMovieDbRetroFitCall retrofit;
-    private Message handlerMessage;
+    private  @ApiManager.ID
+    int identifier;
 
 
-    protected Builder(Handler handler, @BuilderType int builderType,IMovieDbRetroFitCall retrofit) {
-        this.handler = handler;
-        this.builderType = builderType;
+
+    protected Builder(Handler handler, @ApiManager.ID int identifier, IMovieDbRetroFitCall retrofit) {
+        super(handler);
         this.retrofit = retrofit;
-        handlerMessage = handler.obtainMessage();
-
+        this.identifier = identifier;
 
     }
 
-
-
-
-    protected abstract void onBuild(IMovieDbRetroFitCall retrofit);
+    protected   abstract Message buildMessageForHandler(Message handlerMgs);
+    public abstract void onBuild(IMovieDbRetroFitCall retrofit );
 
 
     @Override
     public void run() {
-       onBuild(retrofit);
+        onBuild(retrofit);
+    }
+
+    @Override
+    protected Message getHandlerMessage(Message message) {
+        message.what = identifier;
+        message = buildMessageForHandler(message);
+        return message;
 
     }
 
 
-    protected void sentToHandler(BuilderResult result) {
-        Message message = handler.obtainMessage();
-        message.what = builderType;
-        message.obj = result;
-
-        handler.sendMessage(message);
-
-    }
 
 
 
 
-    public static final int RAW_FILM = 0;
-    public static final int RAW_GENRE = 1;
 
 
-    @IntDef({RAW_FILM, RAW_GENRE})
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface BuilderType {
-
-    }
 
 }

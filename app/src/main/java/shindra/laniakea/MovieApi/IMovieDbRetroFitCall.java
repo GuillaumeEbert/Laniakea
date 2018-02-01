@@ -1,12 +1,11 @@
 package shindra.laniakea.MovieApi;
 
-import okhttp3.Callback;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import shindra.laniakea.MovieApi.RawData.RawFilm;
-import shindra.laniakea.MovieApi.RawData.RawGenre;
+import shindra.laniakea.MovieApi.DataRaw.RawCredit;
+import shindra.laniakea.MovieApi.DataRaw.RawFilm;
+import shindra.laniakea.MovieApi.DataRaw.RawGenre;
 
 /**
  * Created by Guillaume on 30/01/2018.
@@ -26,13 +25,10 @@ public interface IMovieDbRetroFitCall {
     @GET("/3/genre/{genre_id}/movies?" + API_KEY + LANGUAGE + "&include_adult=false&sort_by=created_at.asc")
     Call<RawFilm> getAllFilmPerRange(@Path("genre_id") String genreId);
 
-    /*// USER PROFILE DATA
-    @GET("/sc2/profile/user")
-    Call<ResponseBody> getSC2Profile(@Query("access_token") String token);
+    @GET("/3/movie/{movie_id}/credits?" + API_KEY + LANGUAGE )
+    Call<RawCredit> getFilmCredit(@Path("movie_id") String movieId);
 
-    // BATTLENET PROFILE
-    @GET("/account/user")
-    Call<ResponseBody> getBattlenetProfile(@Query("access_token") String token);*/
+
 }
 
 

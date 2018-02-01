@@ -1,33 +1,37 @@
 package shindra.laniakea.MovieApi.RawDataBuilder;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import shindra.laniakea.MovieApi.DataRaw.RawCredit;
+import shindra.laniakea.MovieApi.DataRaw.RawFilm;
 import shindra.laniakea.MovieApi.IMovieDbRetroFitCall;
-import shindra.laniakea.MovieApi.RawData.RawFilm;
+import shindra.laniakea.MovieApi.Manager.ApiManager;
 
 /**
  * Created by Guillaume on 30/01/2018.
  */
 
-public class RawFilmsBuilder extends Builder<RawFilm> {
+public class RawFilmsBuilder extends Builder {
 
     private String sGenreId;
-    private int genreId;
+    private RawFilm rawFilm;
 
-    public RawFilmsBuilder(Handler handler, Integer genreId,IMovieDbRetroFitCall retrofit) {
-        super(handler, RAW_FILM,retrofit);
+    public RawFilmsBuilder(Handler handler, Integer genreId, IMovieDbRetroFitCall retrofit) {
+        super(handler, ApiManager.RAW_FILM_BUILDER_ID, retrofit);
         this.sGenreId = Integer.toString(genreId);
-        this.genreId = genreId;
+
     }
 
     @Override
-    protected void onBuild(IMovieDbRetroFitCall retrofit) {
+    public void onBuild( IMovieDbRetroFitCall retrofit) {
 
         Call<RawFilm> call = null;
+
         call = retrofit.getAllFilmPerRange(sGenreId);
 
 
@@ -36,7 +40,8 @@ public class RawFilmsBuilder extends Builder<RawFilm> {
             call.enqueue(new Callback<RawFilm>() {
                 @Override
                 public void onResponse(Call<RawFilm> call, Response<RawFilm> response) {
-                    sentToHandler(response.body());
+                    rawFilm = response.body();
+                     sendMessage();
 
                 }
 
@@ -45,10 +50,44 @@ public class RawFilmsBuilder extends Builder<RawFilm> {
                     Log.e("RawFilmBuilder", t.toString());
                 }
             });
-
-
-
         }
+    }
+
+
+    @Override
+    protected Message buildMessageForHandler(Message handlerMgs) {
+        handlerMgs.obj = rawFilm;
+
+        return handlerMgs;
 
     }
+
+   /* private void getCredit(IMovieDbRetroFitCall retrofit, int filmId) {
+        Call<RawCredit> callCredit = null;
+
+        callCredit = retrofit.getFilmCredit(Integer.toString(filmId));
+
+        if (null != callCredit) {
+            callCredit.enqueue(new Callback<RawCredit>() {
+                @Override
+                public void onResponse(Call<RawCredit> call, Response<RawCredit> response) {
+
+                    RawCredit credit = response.body();
+                    rawFilm
+                    sendMessage();
+
+                }
+
+                @Override
+                public void onFailure(Call<RawCredit> call, Throwable t) {
+                    Log.e("RawFilmBuilder", t.toString());
+                }
+            });
+        }
+
+    }*/
+
+
 }
+
+

@@ -1,8 +1,8 @@
-package shindra.laniakea.MovieApi.RawData;
+package shindra.laniakea.MovieApi.DataRaw;
 
 import java.util.List;
 
-import shindra.laniakea.MovieApi.UsableData.Genre;
+import shindra.laniakea.MovieApi.DataUsable.Genre;
 
 /**
  * Created by Guillaume on 30/01/2018.
